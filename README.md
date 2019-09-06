@@ -11,10 +11,10 @@ public class Program
 {
     public static void Main()
     => new WebHostBuilder()
-        .UseKestrel()
-        .Configure(app => app.Use(context => context.Response.WriteAsync("Hello World!")))
-        .Build()
-        .Run();
+    .UseKestrel()
+    .Configure(app => app.Use(context => context.Response.WriteAsync("Hello World!")))
+    .Build()
+    .Run();
 }
 
 WebHostBuilder、Server（即Kestrel）、ApplicationBuilder(即app)三大重要的对象
