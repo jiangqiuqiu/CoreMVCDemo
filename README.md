@@ -17,8 +17,11 @@ public class Program
     .Run();
 }
 
-WebHostBuilder、Server（即Kestrel）、ApplicationBuilder(即app)三大重要的对象
-WebHostBuilder这个父亲生出WebHost这个孩子，WebHost又生成整个ASP.NET Core最核心的内容，即由Server和中间件(Middleware)构成的管道Pipeline。
+WebHostBuilder、Server（即Kestrel）、ApplicationBuilder(即app)三大重要的对象,如下图所示：
+![image](https://github.com/jiangqiuqiu/MyResource/blob/master/MyImages/WebHostBuilder-Server-ApplicationBuilder.png)
+
+WebHostBuilder这个父亲生出WebHost这个孩子，WebHost又生成整个ASP.NET Core最核心的内容，即由Server和中间件(Middleware)构成的管道Pipeline。我们来看PipeLine的放大图：
+![PipeLine](https://github.com/jiangqiuqiu/MyResource/blob/master/MyImages/Server-Middleware.png)
 继续把Pipeline拆开，有个很重要的ApplicationBuilder对象，里面包含Middleware、RequestDelegate。至于HttpContext是独立共享的对象，贯穿在整个管道中间，至此7大对象全部出场完毕。
 
 Configure是个什么玩意？看下代码：
