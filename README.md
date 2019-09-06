@@ -52,5 +52,5 @@ public RequestDelegate Build()
     };
 }
 
-![image](https://github.com/jiangqiuqiu/MyResource/MyImages/COREProcess.png?raw=true)
+![image](https://github.com/jiangqiuqiu/MyResource/blob/master/MyImages/COREProcess.png)
 WebHostBuilder开始Build的那一刻开始，WebHost被构造，Server被指定，Middlewares被指定，等WebHost真正启动的时候，Server开始监听，收到请求后，Middleware开始执行。
