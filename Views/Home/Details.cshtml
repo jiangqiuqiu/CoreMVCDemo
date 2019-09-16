@@ -1,0 +1,78 @@
+﻿@*@using CoreMVCDemo.Models
+    <html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <h3>@ViewData["PageTitle"]</h3>
+
+        @{ var student = ViewData["Student"] as Student; }
+
+        <div>
+            姓名 : @student.Name
+        </div>
+        <div>
+            邮箱 : @student.Email
+        </div>
+        <div>
+            班级名称 : @student.ClassName
+        </div>
+    </body>
+    </html>*@
+
+@*<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <h3>@ViewBag.PageTitle</h3>
+
+        <div>
+            姓名 : @ViewBag.Student.Name
+        </div>
+        <div>: @ViewBag.Student.Email</div>
+        <div>
+            班级名称 : @ViewBag.Student.ClassName
+        </div>
+    </body>
+    </html>*@
+
+@*@model CoreMVCDemo.Models.Student
+    <html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <h3>@ViewBag.PageTitle</h3>
+        <div>
+            姓名 : @Model.Name
+        </div>
+        <div>
+            邮箱 : @Model.Email
+        </div>
+        <div>
+            班级名称 : @Model.ClassName
+        </div>
+    </body>
+    </html>*@
+
+@model CoreMVCDemo.ViewModels.HomeDetailsViewModel
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <h3>@Model.PageTitle</h3>
+    @{ }
+
+    <div>
+        姓名 : @Model.Student.Name
+    </div>
+    <div>
+        邮箱 : @Model.Student.Email
+    </div>
+    <div>
+        班级名称 : @Model.Student.ClassName
+    </div>
+</body>
+</html>

@@ -12,6 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
+        //"ASPNETCORE_ENVIRONMENT": "UAT"
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
