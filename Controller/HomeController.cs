@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CoreMVCDemo
 {
+    //将应用于控制器操作方法的路由模板移动到了控制器上,精简代码
+    [Route("Home")]
     public class HomeController : Controller
     {
         private readonly IStudentRepository _studentRepository;
@@ -18,14 +20,34 @@ namespace CoreMVCDemo
         {
             _studentRepository = studentRepository;
         }
-        public string Index()
+
+        //需要记住的一个非常重要的一点是, 如果操作方法上的路由模板以/或 ~/开头, 
+        //则控制器路由模板不会与操作方法路由模板组合在一起。
+        [Route("/")]//不加这个 http://localhost:10153/ 就访问不到了
+        [Route("")]
+        //[Route("Home")]
+        //[Route("Home/Index")]
+        [Route("Index")]
+        public ViewResult Index()
         {
-            return _studentRepository.GetStudent(1).Name;
+            //返回id是1的学生姓名，返回值是string
+            //return _studentRepository.GetStudent(1).Name;
+
+
+            //查询所有的学生信息
+            var model = _studentRepository.GetAllStudents();
+            //将学生列表传递到视图
+            return View(model);
         }
 
-        public ViewResult Details()
+        //?使路由模板中的id参数为可选，如果要使它为必选，删除?即可
+        //[Route("Home/Details/{id?}")]
+        [Route("Details/{id?}")]
+        //? 使id方法参数可以为空
+        public ViewResult Details(int? id)
         {
-            Student model = _studentRepository.GetStudent(1);
+            //?? 如果"id"为null，则使用1，否则使用路由中传递过来的值
+            Student model = _studentRepository.GetStudent(id??1);
             //return View(model);
 
             //View（string viewName） 方法
@@ -86,8 +108,8 @@ namespace CoreMVCDemo
             //实例化HomeDetailsViewModel并存储Student详细信息和PageTitle
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
             {
-                Student = _studentRepository.GetStudent(1),
-                PageTitle = "Student Details"
+                Student = _studentRepository.GetStudent(id??1),
+                PageTitle = "学生详细信息"
             };
 
             // 将ViewModel对象传递给View()方法

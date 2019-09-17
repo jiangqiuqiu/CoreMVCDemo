@@ -89,7 +89,14 @@ namespace CoreMVCDemo
             //对应用程序根 URL 的请求即http://localhost:10153由UseFileServer处理中间件和管道从那里反转
 
             //注意顺序
-            app.UseMvcWithDefaultRoute();
+            //app.UseMvcWithDefaultRoute();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+            //app.UseMvc();//用于验证属性路由
 
             //app.Run(async (context) =>
             //{

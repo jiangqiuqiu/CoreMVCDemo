@@ -9,6 +9,7 @@ namespace CoreMVCDemo.Repository
     public interface IStudentRepository
     {
         Student GetStudent(int id);
+        IEnumerable<Student> GetAllStudents();
         void Save(Student student);
     }
 }

@@ -20,6 +20,11 @@ namespace CoreMVCDemo.Repository
             };
         }
 
+        public IEnumerable<Student> GetAllStudents()
+        {
+            return _studentList;
+        }
+
         public Student GetStudent(int id)
         {
             return _studentList.FirstOrDefault(a => a.Id == id);

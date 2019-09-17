@@ -56,15 +56,35 @@
     </body>
     </html>*@
 
-@model CoreMVCDemo.ViewModels.HomeDetailsViewModel
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <h3>@Model.PageTitle</h3>
-    @{ }
+@*@model CoreMVCDemo.ViewModels.HomeDetailsViewModel*@
 
+@*由于有_ViewImports.cshtml，引入命名空间，所以这里就不用再引入命名空间了*@
+@model HomeDetailsViewModel
+@{
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "学生详情页";
+}
+@*<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <h3>@Model.PageTitle</h3>
+        @{ }
+
+        <div>
+            姓名 : @Model.Student.Name
+        </div>
+        <div>
+            邮箱 : @Model.Student.Email
+        </div>
+        <div>
+            班级名称 : @Model.Student.ClassName
+        </div>
+    </body>
+    </html>*@
+
+@*<h3>@Model.PageTitle</h3>
     <div>
         姓名 : @Model.Student.Name
     </div>
@@ -73,6 +93,31 @@
     </div>
     <div>
         班级名称 : @Model.Student.ClassName
+    </div>*@
+
+<div class="row justify-content-center m-3">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header">
+                <h1>@Model.Student.Name</h1>
+            </div>
+
+            <div class="card-body text-center">
+                <img class="card-img-top" src="~/images/noimage.jpg" />
+
+                <h4>学生ID : @Model.Student.Id</h4>
+                <h4>邮箱 : @Model.Student.Email</h4>
+                <h4>班级名称 : @Model.Student.ClassName</h4>
+            </div>
+            <div class="card-footer text-center">
+                <a href="#" class="btn btn-primary">返回</a>
+                <a href="#" class="btn btn-primary">编辑</a>
+                <a href="#" class="btn btn-danger">删除</a>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</div>
+
+@section Scripts {
+    <script src="~/js/CustomScript.js"></script>
+}

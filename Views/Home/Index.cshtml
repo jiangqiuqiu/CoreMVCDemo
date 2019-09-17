@@ -1,7 +1,63 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "学生列表页面";
 }
 
-<h1>Home-Index</h1>
+@*@model IEnumerable<CoreMVCDemo.Models.Student>*@
+@*<!DOCTYPE html>
+    <html>
+    <head>
+        <title>学生页面详情</title>
+    </head>
+    <body>
 
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名字</th>
+                    <th>班级名称</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model)
+                {
+                    <tr>
+                        <td>
+                            @student.Id
+                        </td>
+                        <td>
+                            @student.Name
+                        </td>
+                        <td>
+                            @student.ClassName
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </body>
+    </html>*@
+@model IEnumerable<Student>
+
+<div class="card-deck">
+    @foreach (var student in Model)
+    {
+    <div class="card m-3">
+        <div class="card-header">
+            <h3>@student.Name</h3>
+        </div>
+        <!-- asp-append-version = true 缓存破坏行为
+            将图像的内容，生成唯一的散列值并将其附加到图片的 URL。
+            此唯一字符串会提示浏览器从服务器重新加载图片，而不是从浏览器缓存重新加载。
+         -->
+        <img class="card-img-top" src="~/images/noimage.jpg" asp-append-version="true" />
+        <div class="card-footer text-center">
+            <a asp-controller="Home" asp-action="Details" asp-route-id="@student.Id">查看</a>
+            <a href="#" class="btn btn-primary">编辑</a>
+            <a href="#" class="btn btn-danger">删除</a>
+        </div>
+    </div>
+    }
+</div>
