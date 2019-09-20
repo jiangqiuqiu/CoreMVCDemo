@@ -19,6 +19,8 @@ namespace CoreMVCDemo
         {
             services.AddMvc();
             services.AddSingleton<IStudentRepository, MockStudentRepository>();
+            //services.AddScoped<IStudentRepository, MockStudentRepository>();
+            //services.AddTransient<IStudentRepository, MockStudentRepository>();
         }
 
         //配置应用程序的请求处理管道

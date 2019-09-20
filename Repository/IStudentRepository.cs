@@ -11,5 +11,6 @@ namespace CoreMVCDemo.Repository
         Student GetStudent(int id);
         IEnumerable<Student> GetAllStudents();
         void Save(Student student);
+        Student Add(Student student);
     }
 }
