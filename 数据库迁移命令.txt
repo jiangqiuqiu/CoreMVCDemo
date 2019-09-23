@@ -1,0 +1,13 @@
+﻿使用迁移功能来同步我们的领域模型和数据库架构设计，使它们保持一致。
+
+get-help about_entityframeworkcore  提供Entity Framework Core的帮助信息
+Add-Migration  添加新迁移记录
+Update-Database 将数据库更新为指定的迁移
+Remove-Migration 可以删除尚未应用到数据库的迁移记录
+如果要删除已经应用到数据库的迁移记录，需要使用Update-Database 待回滚到的历史迁移记录,
+比如:Update-Database 20190923075652_AlterStudentTableSeed 回滚到该历史迁移记录 
+再执行Remove-Migration就可以删除后面不需要的迁移记录了
+
+
+_EFMigrationsHistory表用于跟踪应用于数据库的迁移记录信息
+ModelSnapshots.cs文件顾名思义，它是当前模型的快照，用于确定将在下一次迁移时发生了什么变化

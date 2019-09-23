@@ -24,5 +24,7 @@ namespace CoreMVCDemo.Models
         ErrorMessage = "邮箱的格式不正确")]
         [Required]
         public string Email { get; set; }
+        public string PhotoPath { get; set; }
+       
     }
 }

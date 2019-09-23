@@ -13,8 +13,13 @@ namespace CoreMVCDemo.DataAccess
         public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
         {
-        }
-
+        }        
         public DbSet<Student> Students { get; set; }
+
+        //为我们的数据库添加初始数据，就称之为种子数据
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Seed();//通过扩展方法封装种子数据
+        }
     }
 }
