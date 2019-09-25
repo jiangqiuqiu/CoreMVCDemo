@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CoreMVCDemo.Models;
 using CoreMVCDemo.Repository;
 using CoreMVCDemo.ViewModels;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreMVCDemo
@@ -14,11 +16,13 @@ namespace CoreMVCDemo
     public class HomeController : Controller
     {
         private readonly IStudentRepository _studentRepository;
+        private readonly HostingEnvironment environmentHosting;//不加下划线是因为这个是系统层级的，而不是自己定义的仓储
 
         //使用构造函数注入的方式注入IStudentRepository
-        public HomeController(IStudentRepository studentRepository)
+        public HomeController(IStudentRepository studentRepository,HostingEnvironment environmentHosting)
         {
             _studentRepository = studentRepository;
+            this.environmentHosting = environmentHosting;
         }
 
         //需要记住的一个非常重要的一点是, 如果操作方法上的路由模板以/或 ~/开头, 
@@ -123,16 +127,157 @@ namespace CoreMVCDemo
         }
 
         [HttpPost]
-        public IActionResult Create(Student student)
+        public IActionResult Create(StudentCreateViewModel model)
         {
-            //if (ModelState.IsValid)//使用ModelState.IsValid 属性会检查验证是否失败或成功
-            //{
-            //    Student newStudent = _studentRepository.Add(student);
-            //    return RedirectToAction("Details", new { id = newStudent.Id });
-            //}
+            if (ModelState.IsValid)//使用ModelState.IsValid 属性会检查验证是否失败或成功
+            {
+                //添加一个学生信息
+                //Student newStudent = _studentRepository.Add(student);
+                //return RedirectToAction("Details", new { id = newStudent.Id });
 
-            Student newStudent = _studentRepository.Add(student);
+                //单文件（图片）上传+添加学生信息
+                //string uniqueFileName = null;
+                //if (model.Photo != null)
+                //{
+                //    string uploadsFolder = Path.Combine(environmentHosting.WebRootPath, "images");
+                //    uniqueFileName = $"{Guid.NewGuid().ToString()}_{model.Photo.FileName}";
+                //    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                //    using (var fs = new FileStream(filePath, FileMode.Create))
+                //    {
+                //        model.Photo.CopyTo(fs);
+                //    }
+                //}
+
+                Student newStudent = new Student()
+                {
+                    Name = model.Name,
+                    ClassName = model.ClassName,
+                    Email = model.Email,
+                    //PhotoPath = uniqueFileName
+                    PhotoPath=ProcessUploadFile(model)
+                };
+
+                _studentRepository.Add(newStudent);
+                return RedirectToAction("Details", new { id = newStudent.Id });
+
+
+                //多文件（图片）上传+添加学生信息
+                //string uniqueFileName = null;
+                //if (model.Photos != null && model.Photos.Count>0)
+                //{
+                //    //必须将图像上传到wwwroot中的images文件夹
+                //    //而要获取wwwroot文件夹的路径，我们需要注入ASP.NET Core提供的HostingEnviroment服务
+                //    string uploadsFolder = Path.Combine(environmentHosting.WebRootPath, "images");
+                //    foreach (var photo in model.Photos)
+                //    {
+                //        uniqueFileName = $"{Guid.NewGuid().ToString()}_{photo.FileName}";
+                //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                //        using (var fs = new FileStream(filePath, FileMode.Create))
+                //        {
+                //           photo.CopyTo(fs);
+                //        }
+                //    }                    
+                //}
+
+                //Student newStudent = new Student()
+                //{
+                //    Name = model.Name,
+                //    ClassName = model.ClassName,
+                //    Email = model.Email,
+                //    PhotoPath = uniqueFileName
+                //};
+
+                //_studentRepository.Add(newStudent);
+                //return RedirectToAction("Details", new { id = newStudent.Id });
+            }
             return View();
+
+            //Student newStudent = _studentRepository.Add(student);
+            //return View();
+        }
+
+        //1、视图
+        //2、视图模型
+        //对应的页面调整
+        [HttpGet]
+        public ViewResult Edit(int id)
+        {
+            Student student = _studentRepository.GetStudent(id);
+
+            if (student!=null)
+            {
+                StudentEditViewModel studentEditViewModel = new StudentEditViewModel()
+                {
+                    Id = student.Id,
+                    Name = student.Name,
+                    Email = student.Email,
+                    ClassName = student.ClassName,
+                    ExistingPhotoPath = student.PhotoPath
+                };
+                return View(studentEditViewModel);
+            }
+            return View();
+            //throw new Exception("查询不到学生信息");
+        }
+
+        [HttpPost]
+        public IActionResult Edit(StudentEditViewModel model)
+        {
+            
+            if (ModelState.IsValid)
+            {
+                Student student = _studentRepository.GetStudent(model.Id);
+
+                if (student!=null)
+                {
+                    student.Name = model.Name;
+                    student.Email = model.Email;
+                    student.ClassName = model.ClassName;
+
+                    if (model.Photo!=null)
+                    {
+                        if (model.ExistingPhotoPath!=null)
+                        {
+                            string filePathDelete = Path.Combine(environmentHosting.WebRootPath,"images",model.ExistingPhotoPath);
+                            System.IO.File.Delete(filePathDelete);//删除已存在的图片
+                        }
+
+                        //string uniqueFileName = null;
+                        //string uploadsFolder = Path.Combine(environmentHosting.WebRootPath, "images");
+                        //uniqueFileName = $"{Guid.NewGuid().ToString()}_{model.Photo.FileName}";
+                        //string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        //using (var fs = new FileStream(filePath, FileMode.Create))
+                        //{
+                        //    model.Photo.CopyTo(fs);
+                        //}
+
+                        student.PhotoPath = ProcessUploadFile(model);
+                    }
+                    Student updateStudent = _studentRepository.Update(student);//更新学生信息
+                    return RedirectToAction("Index");
+                }
+            }
+            return View(model);
+        }
+
+        /// <summary>
+        /// 将照片保存到指定的路径中并且返回唯一的文件名
+        /// </summary>
+        /// <returns></returns>
+        private string ProcessUploadFile(StudentCreateViewModel model)
+        {
+            string uniqueFileName = null;
+            if (model.Photo!=null)
+            {
+                string uploadsFolder = Path.Combine(environmentHosting.WebRootPath, "images");
+                uniqueFileName = $"{Guid.NewGuid().ToString()}_{model.Photo.FileName}";
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fs = new FileStream(filePath, FileMode.Create))
+                {
+                    model.Photo.CopyTo(fs);
+                }
+            }            
+            return uniqueFileName;
         }
     }
 }

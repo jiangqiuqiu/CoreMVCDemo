@@ -1,10 +1,27 @@
-﻿@model Student
+﻿@model StudentCreateViewModel
 @inject IStudentRepository stuRepository
 @{
     ViewBag.Title = "创建学生信息";
 }
+    @* 关于enctype，这个属性管理的是表单的MIME编码，共有三个值可选:
+       application/x-www-form-urlencoded是默认值。
+       大家可能在AJAX里见过这 个：xmlHttp.setRequestHeader("Content-Type","application/x-www-form- urlencoded"); 
+       这两个要做的是同一件事情，就是设置表单传输的编码。
+       在AJAX里不写有可能会报错，但是在HTML的form表单里是可以不写 enctype="application/x-www-form-urlencoded"的，
+       因为默认HTML表单就是这种传输编码类型。
 
-    <form asp-controller="home" asp-action="create" method="post" class="mt-3">
+       multipart-form-data是用来指定传输数据的特殊类型的，
+       主要就是我们上传的非文本的内容，比如图片或者mp3等等。
+       
+       text/plain是纯文本传输的意思，在发送邮件时要设置这种编码类型，
+       否则会出现接收时编码混乱的问题，网络上经常拿text/plain和 text/html做比较，
+       其实这两个很好区分，前者用来传输纯文本文件，后者则是传递html代码的编码类型，
+       在发送头文件时才用得上。
+
+       application/x-www-form-urlencoded和text/plain都不能用 于上传文件，只有multipart/form-data才能完整的传递文件数据。
+    *@
+
+    <form enctype="multipart/form-data" asp-controller="home" asp-action="create" method="post" class="mt-3">
 
         <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -37,6 +54,20 @@
         </div>
 
         <div class="form-group row">
+            <label asp-for="Photo" class="col-sm-2 col-form-label"></label>
+            @*<label asp-for="Photos" class="col-sm-2 col-form-label"></label>*@
+            <div class="col-sm-10">
+                <div class="custom-file">
+                    <input asp-for="Photo" class="form-control custom-file-input"/>
+                    @*<input asp-for="Photos" class="form-control custom-file-input" multiple />*@
+                    <label class="custom-file-label">请选择照片...</label>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="form-group row">
             <div class="col-sm-10">
                 <button type="submit" class="btn btn-primary">创建</button>
             </div>
@@ -45,4 +76,33 @@
         <div>
             学生总人数 = @stuRepository.GetAllStudents().Count().ToString()
         </div>
+
+        @section Scripts{ 
+            <script type="text/javascript">
+                $(document).ready(function () {
+
+                    //单文件上传
+                    $(".custom-file-input").on("change", function () {
+                        var filename = $(this).val().split('\\').pop();//pop() 方法用于删除并返回数组的最后一个元素
+                        $(this).next(".custom-file-label").html(filename);
+                    });
+
+
+                    //多文件上传
+                    //$(".custom-file-input").on("change", function () {
+                    //    var fileLabel = $(this).next('.custom-file-label');
+                    //    var files = $(this)[0].files;
+                    //    if (files.length > 1) {
+                    //        fileLabel.html('您已经选择了:' + files.length+'个文件');
+                    //    }
+                    //    else if (files.length == 1) {
+                    //        fileLabel.html(files[0].name);
+                    //    }
+                    //});
+                    
+                });
+            </script>
+
+        }
+
     </form>
