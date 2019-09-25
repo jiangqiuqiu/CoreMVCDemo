@@ -62,6 +62,34 @@ namespace CoreMVCDemo
                 };
                 app.UseDeveloperExceptionPage(developerExceptionPageOptions);
             }
+            else//如果不是开发者环境，使用统一处理
+            {
+                //
+                //拦截异常
+                //
+                app.UseExceptionHandler("/Error");
+
+
+                //
+                //拦截404页面找不到信息
+                //
+
+                //app.UseStatusCodePages();//最不实用也不常用
+
+                //app.UseStatusCodePagesWithRedirects("/Error/{0}");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");//推荐使用
+
+                /* 302状态码:临时重定向
+                 * UseStatusCodePagesWithRedirects:会发出重定向请求(302)，而地址栏的URL将发生更改
+                 * 当发生真实错误的时候，它返回一个success status代码(200)，它在语义上显示的是不正确。
+                 * UseStatusCodePagesWithReExecute:重新执行管道请求并返回原始状态代码（如404）
+                 * 由于它是重新执行管道请求，而不是发出重定向请求时，我们可以看到在地址栏中保留了
+                 * 原来的URL地址
+                 */
+
+               
+
+            }
 
             //
             /*********UseDefaultFiles和UseStaticFiles中间件*****************/
@@ -98,7 +126,7 @@ namespace CoreMVCDemo
              * DirectoryBrowser中间件，支持目录浏览，并允许用户查看指定目录中的文件。
              * 我们可以用UseFileServer 中间件替换UseStaticFiles 和 UseDefaultFiles中间件。
              * *************************/
-             //使用UseFileServer而不是UseDefaultFiles和UseStaticFiles
+            //使用UseFileServer而不是UseDefaultFiles和UseStaticFiles
             FileServerOptions fileServerOptions = new FileServerOptions();
             fileServerOptions.DefaultFilesOptions.DefaultFileNames.Clear();
             fileServerOptions.DefaultFilesOptions.DefaultFileNames.Add("52abp1.html");

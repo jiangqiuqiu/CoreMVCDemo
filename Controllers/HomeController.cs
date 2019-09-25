@@ -9,7 +9,7 @@ using CoreMVCDemo.ViewModels;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoreMVCDemo
+namespace CoreMVCDemo.Controllers
 {
     //将应用于控制器操作方法的路由模板移动到了控制器上,精简代码
     //[Route("Home")]
@@ -48,11 +48,23 @@ namespace CoreMVCDemo
         //[Route("Home/Details/{id?}")]
         //[Route("Details/{id?}")]
         //? 使id方法参数可以为空
-        public ViewResult Details(int? id)
+        //public ViewResult Details(int? id)
+        public ViewResult Details(int id)
         {
+            throw new Exception("此异常发生在Details视图中");
+
+
             //?? 如果"id"为null，则使用1，否则使用路由中传递过来的值
-            Student model = _studentRepository.GetStudent(id??1);
+            //Student model = _studentRepository.GetStudent(id??1);
             //return View(model);
+
+            //404处理
+            Student student = _studentRepository.GetStudent(id);
+            if (student==null)
+            {
+                Response.StatusCode = 404;
+                return View("StudentNotFound",id);
+            }
 
             //View（string viewName） 方法
             //MVC 查找名为 **“Test.cshtml”而不是“Details.cshtml”**的视图文件。
@@ -112,7 +124,8 @@ namespace CoreMVCDemo
             //实例化HomeDetailsViewModel并存储Student详细信息和PageTitle
             HomeDetailsViewModel homeDetailsViewModel = new HomeDetailsViewModel()
             {
-                Student = _studentRepository.GetStudent(id??1),
+                //Student = _studentRepository.GetStudent(id??1),
+                Student = student,
                 PageTitle = "学生详细信息"
             };
 
@@ -159,7 +172,6 @@ namespace CoreMVCDemo
 
                 _studentRepository.Add(newStudent);
                 return RedirectToAction("Details", new { id = newStudent.Id });
-
 
                 //多文件（图片）上传+添加学生信息
                 //string uniqueFileName = null;

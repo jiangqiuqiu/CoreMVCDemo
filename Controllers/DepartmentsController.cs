@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoreMVCDemo
+namespace CoreMVCDemo.Controllers
 {
     //[Route("[controller]")]
     [Route("[controller]/[action]")]//最好在控制器上只设置一次，而不是在控制器中的每个操作方法中包含[action]标记

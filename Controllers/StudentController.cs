@@ -6,7 +6,7 @@ using CoreMVCDemo.Models;
 using CoreMVCDemo.Repository;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoreMVCDemo
+namespace CoreMVCDemo.Controllers
 {
     public class StudentController : Controller
     {

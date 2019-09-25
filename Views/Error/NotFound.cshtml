@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "页面不存在";
+}
+
+<h1>@ViewBag.ErrorMessage</h1>
+
+
+<h1>Path:@ViewBag.Path</h1>
+<h1>QueryStr:@ViewBag.QueryStr</h1>
+<h1>BasePath:@ViewBag.BasePath</h1>
+
+<a asp-controller="Home"
+   asp-action="Index" 
+   class="btn btn-outline-success" 
+   style="width:auto">点击此处返回首页</a>
