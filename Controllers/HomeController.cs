@@ -8,6 +8,7 @@ using CoreMVCDemo.Repository;
 using CoreMVCDemo.ViewModels;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CoreMVCDemo.Controllers
 {
@@ -17,12 +18,14 @@ namespace CoreMVCDemo.Controllers
     {
         private readonly IStudentRepository _studentRepository;
         private readonly HostingEnvironment environmentHosting;//不加下划线是因为这个是系统层级的，而不是自己定义的仓储
+        private readonly ILogger<HomeController> logger;
 
         //使用构造函数注入的方式注入IStudentRepository
-        public HomeController(IStudentRepository studentRepository,HostingEnvironment environmentHosting)
+        public HomeController(IStudentRepository studentRepository,HostingEnvironment environmentHosting,ILogger<HomeController> logger)
         {
             _studentRepository = studentRepository;
             this.environmentHosting = environmentHosting;
+            this.logger = logger;
         }
 
         //需要记住的一个非常重要的一点是, 如果操作方法上的路由模板以/或 ~/开头, 
@@ -51,7 +54,17 @@ namespace CoreMVCDemo.Controllers
         //public ViewResult Details(int? id)
         public ViewResult Details(int id)
         {
-            throw new Exception("此异常发生在Details视图中");
+            logger.LogTrace("Trace(跟踪) Log");
+            logger.LogDebug("Debug(调试) Log");
+            logger.LogInformation("Information(信息)Log");
+            logger.LogWarning("Warning(警告)Log");
+            logger.LogError("Error(错误)Log");
+            logger.LogCritical("Critical(严重)Log");
+
+
+
+            //用于测试异常捕捉的
+            //throw new Exception("此异常发生在Details视图中");
 
 
             //?? 如果"id"为null，则使用1，否则使用路由中传递过来的值
