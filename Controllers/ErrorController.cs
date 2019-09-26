@@ -5,11 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CoreMVCDemo.Controllers
 {
     public class ErrorController : Controller
     {
+        private readonly ILogger<ErrorController> logger;
+
+        /// <summary>
+        /// 通过ASP.NET CORE依赖注入服务注入ILogger接口
+        /// 将指定类型的控制器作为泛型参数
+        /// </summary>
+        /// <param name="logger"></param>
+        public ErrorController(ILogger<ErrorController> logger)
+        {
+            this.logger = logger;
+        }
+
+
+
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
@@ -23,6 +38,11 @@ namespace CoreMVCDemo.Controllers
                     ViewBag.Path = statusCodeResult.OriginalPath;
                     ViewBag.QueryStr = statusCodeResult.OriginalQueryString;
                     ViewBag.BasePath = statusCodeResult.OriginalPathBase;
+
+                    //记录日志
+                    logger.LogWarning($"发生了一个404错误，路径={statusCodeResult.OriginalPath}" +
+                        $"以及查询字符串={statusCodeResult.OriginalQueryString}");
+
                     break;
                 default:
                     break;
@@ -35,6 +55,12 @@ namespace CoreMVCDemo.Controllers
         public IActionResult Error()
         {
             var exceptionHandlerPathFeature=HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+            //记录日志
+            logger.LogError($"路径{exceptionHandlerPathFeature.Path}," +
+                $"产生了一个错误:{exceptionHandlerPathFeature.Error.Message}" +
+                $"堆栈信息为:{exceptionHandlerPathFeature.Error.StackTrace}");
+
             ViewBag.ExceptionPath = exceptionHandlerPathFeature.Path;
             ViewBag.ExceptionMessage = exceptionHandlerPathFeature.Error.Message;
             ViewBag.StackTrace = exceptionHandlerPathFeature.Error.StackTrace;

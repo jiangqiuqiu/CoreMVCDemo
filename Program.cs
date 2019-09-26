@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace CoreMVCDemo
 {
@@ -18,7 +19,21 @@ namespace CoreMVCDemo
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+            WebHost.CreateDefaultBuilder(args).ConfigureLogging(
+                (hostingContext, logging) =>
+                {
+                    //logging.ClearProviders();//清除所有的默认设置
+
+                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                    logging.AddConsole();
+                    logging.AddDebug();
+                    logging.AddEventSourceLogger();
+
+                    //启用NLog作为日志程序之一
+                    logging.AddNLog();
+                }
+                
+                )
                 .UseStartup<Startup>();
     }
 }
