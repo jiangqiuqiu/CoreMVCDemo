@@ -7,6 +7,7 @@ using CoreMVCDemo.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,10 +26,42 @@ namespace CoreMVCDemo
         //配置应用程序所需的服务
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /*正常的中间件添加顺序如下
+         * 1、异常/错误处理
+         * 2、HTTP 严格传输安全协议
+         * 3、HTTPS 重定向
+         * 4、静态文件服务器
+         * 5、Cookie 策略实施
+         * 6、身份验证
+         * 7、会话
+         * 8、MVC
+         * 
+         * 微软提供的写法如下:
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
+            app.UseDefaultFiles();// 设置默认文件，必须在app.UseStaticFiles()之前
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseSession();
+            app.UseMvc();
+         */
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<AppDbContext>(
             options => options.UseSqlServer(_configuration.GetConnectionString("StudentDBConnection")));
+
+            services.AddIdentity<IdentityUser,IdentityRole>().
+                AddEntityFrameworkStores<AppDbContext>();//第二步 配置ASP.NET CORE Identity服务
 
             services.AddMvc();
             //services.AddSingleton<IStudentRepository, MockStudentRepository>();
@@ -132,6 +165,9 @@ namespace CoreMVCDemo
             fileServerOptions.DefaultFilesOptions.DefaultFileNames.Add("52abp1.html");
             app.UseFileServer(fileServerOptions);
             //对应用程序根 URL 的请求即http://localhost:10153由UseFileServer处理中间件和管道从那里反转
+
+            //第三步 添加认证中间件
+            app.UseAuthentication();//注意顺序
 
             //注意顺序
             //app.UseMvcWithDefaultRoute();
