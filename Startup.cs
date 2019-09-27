@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CoreMVCDemo.DataAccess;
+using CoreMVCDemo.MiddleWares;
 using CoreMVCDemo.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -60,7 +61,25 @@ namespace CoreMVCDemo
             services.AddDbContextPool<AppDbContext>(
             options => options.UseSqlServer(_configuration.GetConnectionString("StudentDBConnection")));
 
+            services.Configure<IdentityOptions>(options=> {
+                //获取或设置密码必须的最小长度。默认为6
+                options.Password.RequiredLength = 6;
+                //获取或设置一个标志，该标志指示密码是否必须包含数字。默认值为true。
+                options.Password.RequireDigit = true;
+                //获取或设置密码必须包含的唯一字符的最小数目。默认为1。
+                //以下设置意思是密码中至少要有6个不同的字符 
+                //反例:111qqq 111111 a11234 这类的不同字符都不满足至少6位(亲测有效，无法通过验证)
+                options.Password.RequiredUniqueChars = 6;
+                //获取或设置一个标志，该标志指示密码是否必须包含非字母数字字符。默认值为true。
+                options.Password.RequireNonAlphanumeric = false;
+                //获取或设置一个标志，该标志指示密码是否必须包含小写ASCII字符。默认值为true。
+                options.Password.RequireLowercase = true;
+                //获取或设置一个标志，该标志指示密码是否必须包含大写ASCII字符。默认值为true。
+                options.Password.RequireUppercase = false;
+            });
+
             services.AddIdentity<IdentityUser,IdentityRole>().
+                AddErrorDescriber<CustomIdentityErrorDescriber>().//将
                 AddEntityFrameworkStores<AppDbContext>();//第二步 配置ASP.NET CORE Identity服务
 
             services.AddMvc();
