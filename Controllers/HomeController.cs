@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CoreMVCDemo.Models;
 using CoreMVCDemo.Repository;
 using CoreMVCDemo.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,10 @@ namespace CoreMVCDemo.Controllers
 {
     //将应用于控制器操作方法的路由模板移动到了控制器上,精简代码
     //[Route("Home")]
+
+    //表示当前控制器需要有用户认证
+    //实际情况就是，当访问该控制器下的方法时候就需要登录
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly IStudentRepository _studentRepository;
@@ -52,6 +57,8 @@ namespace CoreMVCDemo.Controllers
         //[Route("Details/{id?}")]
         //? 使id方法参数可以为空
         //public ViewResult Details(int? id)
+        //[Authorize]//也可以放在具体Action上
+        //[AllowAnonymous]//允许匿名访问
         public ViewResult Details(int id)
         {
             logger.LogTrace("Trace(跟踪) Log");

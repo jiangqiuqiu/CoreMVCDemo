@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoreMVCDemo.Models;
 using CoreMVCDemo.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreMVCDemo.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> userManager;
@@ -75,14 +77,16 @@ namespace CoreMVCDemo.Controllers
             return RedirectToAction("Index","Home");
         }
 
+        //[AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        
+        [HttpPost]        
+        public async Task<IActionResult> Login(LoginViewModel model,string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -90,13 +94,45 @@ namespace CoreMVCDemo.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        //防止开放式重定向攻击
+                        if (Url.IsLocalUrl(returnUrl))//如果是本地的URL则返回
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            //ModelState.AddModelError(string.Empty, "防止开放式重定向攻击");
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }                    
                 }
 
                 ModelState.AddModelError(string.Empty,"登录失败，请重试");
             }
 
             return View(model);
+        }
+
+        [AcceptVerbs("Get","Post")]
+        [AllowAnonymous]
+        public async Task<IActionResult> IsEmailInUse(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user==null)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"邮箱:{email}已经被注册使用了");
+            }
         }
     }
 }

@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using CoreMVCDemo.DataAccess;
 using CoreMVCDemo.MiddleWares;
 using CoreMVCDemo.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,7 +84,13 @@ namespace CoreMVCDemo
                 AddErrorDescriber<CustomIdentityErrorDescriber>().//将
                 AddEntityFrameworkStores<AppDbContext>();//第二步 配置ASP.NET CORE Identity服务
 
-            services.AddMvc();
+            services.AddMvc(configs=> {
+                //授权策略具体表示为一个AuthorizationPolicy对象
+                //AuthorizationPolicyBuilder提供了一系列建立AuthorizationPolicy的快捷体例
+                AuthorizationPolicy policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
+                configs.Filters.Add(new AuthorizeFilter(policy));//将权限认证放入到过滤器中
+            });
             //services.AddSingleton<IStudentRepository, MockStudentRepository>();
             //services.AddScoped<IStudentRepository, MockStudentRepository>();
             //services.AddTransient<IStudentRepository, MockStudentRepository>();
