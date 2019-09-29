@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CoreMVCDemo.CustomerUtil;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,6 +14,7 @@ namespace CoreMVCDemo.ViewModels
         [Display(Name ="邮箱地址")]
         [EmailAddress]
         [Remote(action:"IsEmailInUse",controller:"Account")]//通过指定的路由去后台验证该属性的值知否有效，属于服务器验证
+        [ValidEmailDomain(allowedDomain:"52abp.com",ErrorMessage ="电子邮箱后缀必须是52abp.com")]
         public string Email { get; set; }
 
         [Required]
