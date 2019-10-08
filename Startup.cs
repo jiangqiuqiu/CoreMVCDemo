@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoreMVCDemo.DataAccess;
 using CoreMVCDemo.MiddleWares;
+using CoreMVCDemo.Models;
 using CoreMVCDemo.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -80,7 +81,7 @@ namespace CoreMVCDemo
                 options.Password.RequireUppercase = false;
             });
 
-            services.AddIdentity<IdentityUser,IdentityRole>().
+            services.AddIdentity<ApplicationUser, IdentityRole>().
                 AddErrorDescriber<CustomIdentityErrorDescriber>().//将
                 AddEntityFrameworkStores<AppDbContext>();//第二步 配置ASP.NET CORE Identity服务
 

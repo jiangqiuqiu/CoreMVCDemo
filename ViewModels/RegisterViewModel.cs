@@ -27,5 +27,8 @@ namespace CoreMVCDemo.ViewModels
         [Compare("Password",
             ErrorMessage ="密码与确认密码不一致，请重新输入.")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "城市")]
+        public string City { get; set; }
     }
 }
