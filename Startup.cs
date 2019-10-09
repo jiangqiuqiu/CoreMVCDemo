@@ -82,7 +82,7 @@ namespace CoreMVCDemo
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>().
-                AddErrorDescriber<CustomIdentityErrorDescriber>().//将
+                AddErrorDescriber<CustomIdentityErrorDescriber>().
                 AddEntityFrameworkStores<AppDbContext>();//第二步 配置ASP.NET CORE Identity服务
 
             services.AddMvc(configs=> {

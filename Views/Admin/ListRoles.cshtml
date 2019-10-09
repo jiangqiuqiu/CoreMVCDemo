@@ -1,0 +1,41 @@
+﻿@model IEnumerable<IdentityRole> 
+@{
+    ViewData["Title"] = "角色列表";
+}
+
+<h1>所有的角色列表信息</h1>
+
+@if (Model.Any())
+{
+    <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole" asp-controller="Admin">添加角色</a>
+    foreach (var role in Model)
+    {
+<div class="card mb-3">
+    <div class="card-header">角色ID:@role.Id</div>
+    <div class="card-body">
+        <h5 class="card-title">@role.Name</h5>
+    </div>
+    <div class="card-footer ">
+        <a href="#" class="btn btn-primary">编辑</a>
+        <a href="#" class="btn btn-danger">删除</a>
+    </div>
+    
+</div>
+    }
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            尚未创建任何角色信息
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title">点击下面的按钮创建角色</h5>
+        </div>
+
+        <div class="card-footer">
+            <a asp-controller="Admin" asp-action="CreateRole" class="btn btn-primary" style="width:auto">创建角色</a>
+        </div>
+    </div>
+}
