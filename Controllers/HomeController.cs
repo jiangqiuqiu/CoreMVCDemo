@@ -19,6 +19,7 @@ namespace CoreMVCDemo.Controllers
     //表示当前控制器需要有用户认证
     //实际情况就是，当访问该控制器下的方法时候就需要登录
     //[Authorize]
+    [AllowAnonymous]//本控制器允许匿名访问
     public class HomeController : Controller
     {
         private readonly IStudentRepository _studentRepository;

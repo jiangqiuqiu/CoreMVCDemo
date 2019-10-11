@@ -81,6 +81,13 @@ namespace CoreMVCDemo
                 options.Password.RequireUppercase = false;
             });
 
+            services.ConfigureApplicationCookie(options=>
+            {
+                options.AccessDeniedPath = "/Account/FangYu";
+            });
+
+
+
             services.AddIdentity<ApplicationUser, IdentityRole>().
                 AddErrorDescriber<CustomIdentityErrorDescriber>().
                 AddEntityFrameworkStores<AppDbContext>();//第二步 配置ASP.NET CORE Identity服务

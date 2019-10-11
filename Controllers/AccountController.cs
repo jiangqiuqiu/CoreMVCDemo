@@ -135,5 +135,19 @@ namespace CoreMVCDemo.Controllers
                 return Json($"邮箱:{email}已经被注册使用了");
             }
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult FangYu()
+        {
+            return View();
+        }
     }
 }

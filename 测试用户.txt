@@ -1,3 +1,9 @@
 ﻿
-用户名:jiangy@163.com
+用户名:jiangy@163.com    admin角色
+密码:@123456jiang
+
+用户名:jiangy1@52abp.com   user角色
+密码:@123456jiang
+
+用户名:jiangy2@52abp.com   admin和user角色
 密码:@123456jiang

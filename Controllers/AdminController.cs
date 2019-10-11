@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoreMVCDemo.Models;
 using CoreMVCDemo.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreMVCDemo.Controllers
 {
+    [Authorize(Roles ="admin")]//只有admin角色才能访问.注意:这个是大小写敏感的
     public class AdminController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
